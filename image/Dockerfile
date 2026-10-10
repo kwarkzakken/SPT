@@ -3,7 +3,7 @@
 # Adds: the tools startup.sh needs, a non-root 'container' user, and a Pelican
 #       entrypoint that evaluates the $STARTUP environment variable (the mechanism
 #       Wings uses to launch a server).
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-bookworm-slim
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble
 
 RUN apt-get update -y \
  && apt-get install -y --no-install-recommends \
