@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Runtime tools (jq, 7zz, curl, exiftool, unzip, tar) and the .NET 10 ASP.NET
+# Runtime tools (jq, 7z, curl, exiftool, unzip, tar) and the .NET 10 ASP.NET
 # runtime are provided by the custom image (ghcr.io/kwarkzakken/spt).
 # The container root filesystem is read-only; only /home/container is writable.
 
@@ -99,7 +99,7 @@ install_spt() {
         curl -sL "https://mirror.sp-tushonka.com/releases/SPT-${FORCE_SPT_VERSION}.7z" \
             -o ${FORCED_SPT_VERSION_ARCHIVE}
             rm -rf $SPT_DATA_DIR
-            7zz x ${FORCED_SPT_VERSION_ARCHIVE} -o${MOUNTED_DIR} -aoa
+            7z x ${FORCED_SPT_VERSION_ARCHIVE} -o${MOUNTED_DIR} -aoa
         else
             echo "Version archive already present, presumed installed. Skipping."
             echo "Remove ${FORCED_SPT_VERSION_ARCHIVE} from server files to force reinstall."
@@ -108,7 +108,7 @@ install_spt() {
         rm -rf $SPT_DATA_DIR
         echo "Downloading SPT $SPT_VERSION"
         curl -sL "https://mirror.sp-tushonka.com/releases/SPT-${SPT_VERSION}.7z" -o "${MOUNTED_DIR}/spt.7z"
-        7zz x "${MOUNTED_DIR}/spt.7z" -o${MOUNTED_DIR} -aoa
+        7z x "${MOUNTED_DIR}/spt.7z" -o${MOUNTED_DIR} -aoa
         rm "${MOUNTED_DIR}/spt.7z"
     fi
     make_spt_dirs
@@ -156,8 +156,8 @@ install_fika_mod() {
     mkdir -p "$SPT_DIR/user/mods"
     cd /tmp
     curl -sL "$FIKA_RELEASE_URL" -O
-    # Use 7zz to extract (unzip not available; 7-zip handles zip format)
-    7zz x "$FIKA_ARTIFACT" -o/tmp/fika_temp/ -y
+    # Use 7z to extract (unzip not available; 7-zip handles zip format)
+    7z x "$FIKA_ARTIFACT" -o/tmp/fika_temp/ -y
     mv /tmp/fika_temp/SPT/user/mods/fika-server "$FIKA_MOD_DIR"
     rm -rf /tmp/fika_temp "/tmp/$FIKA_ARTIFACT"
     echo "Fika installation complete"
@@ -353,12 +353,12 @@ install_requested_mods() {
         fi
     done
 
-    # Extract archives (.zip/.7z via 7zz, .tar* via tar)
+    # Extract archives (.zip/.7z via 7z, .tar* via tar)
     shopt -s nullglob
     local archive
     for archive in "$tmp_dl"/*.zip "$tmp_dl"/*.7z; do
         echo "  Extracting $(basename "$archive")" >> "$log_file"
-        7zz x "$archive" -o"$tmp_ex" -y >> "$log_file" 2>&1
+        7z x "$archive" -o"$tmp_ex" -y >> "$log_file" 2>&1
         rm -f "$archive"
     done
     for archive in "$tmp_dl"/*.tar "$tmp_dl"/*.tar.gz "$tmp_dl"/*.tgz; do
