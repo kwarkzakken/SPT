@@ -41,9 +41,9 @@
         },
         {
             "name": "Fika Version",
-            "description": "Fika server mod version to install or validate (e.g. 2.4.8). Only used when FIKA_MODE is not disabled.",
+            "description": "Fika server mod version to install or validate (e.g. 2.4.2). Only used when FIKA_MODE is not disabled.",
             "env_variable": "FIKA_VERSION",
-            "default_value": "2.4.8",
+            "default_value": "2.4.2",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|max:20",

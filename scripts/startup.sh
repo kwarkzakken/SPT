@@ -23,7 +23,7 @@ FORCED_SPT_VERSION_ARCHIVE=SPT-${FORCE_SPT_VERSION}.7z
 AUTO_UPDATE_SPT=${AUTO_UPDATE_SPT:-false}
 
 # Fika
-FIKA_VERSION=${FIKA_VERSION:-2.2.6}
+FIKA_VERSION=${FIKA_VERSION:-2.4.2}
 FIKA_MODE=${FIKA_MODE:-disabled}
 FIKA_BACKUP_DIR=$BACKUP_ROOT/fika/$(date +%Y%m%dT%H%M)
 FIKA_CONFIG_PATH=assets/configs/fika.jsonc
@@ -155,10 +155,12 @@ install_fika_mod() {
     echo "Installing Fika server mod $FIKA_VERSION"
     mkdir -p "$SPT_DIR/user/mods"
     cd /tmp
-    curl -sL "$FIKA_RELEASE_URL" -O
+    curl -fL --retry 3 "$FIKA_RELEASE_URL" -o "$FIKA_ARTIFACT"
+    7z t "$FIKA_ARTIFACT"
+    rm -rf /tmp/fika_temp
     # Use 7z to extract (unzip not available; 7-zip handles zip format)
     7z x "$FIKA_ARTIFACT" -o/tmp/fika_temp/ -y
-    mv /tmp/fika_temp/SPT/user/mods/fika-server "$FIKA_MOD_DIR"
+    mv /tmp/fika_temp/SPT_Runtime/user/mods/fika-server "$FIKA_MOD_DIR"
     rm -rf /tmp/fika_temp "/tmp/$FIKA_ARTIFACT"
     echo "Fika installation complete"
 }

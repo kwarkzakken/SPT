@@ -4,9 +4,9 @@
 # Server files destination: /mnt/server (= /home/container at runtime)
 set -e
 
-SPT_DIR=/mnt/server/SPT
+SPT_DIR=/mnt/server/SPT_Runtime
 SPT_VERSION=${SPT_VERSION:-4.1.6-40743-731d7a2}
-FIKA_VERSION=${FIKA_VERSION:-2.4.8}
+FIKA_VERSION=${FIKA_VERSION:-2.4.2}
 FIKA_MODE=${FIKA_MODE:-disabled}
 LISTEN_ALL_NETWORKS=${LISTEN_ALL_NETWORKS:-true}
 
@@ -44,7 +44,7 @@ chmod +x /mnt/server/startup.sh
 echo "startup.sh written"
 
 # Install SPT if not already present
-# SPT archive extracts with a top-level SPT/ directory, so binary lands at /mnt/server/SPT_Runtime/SPT.Server.Linux
+# SPT archive extracts with a top-level SPT_Runtime/ directory.
 if [[ -f "$SPT_DIR/SPT.Server.Linux" ]]; then
     echo "SPT server binary found at $SPT_DIR, skipping download"
 else
@@ -71,9 +71,11 @@ if [[ "$FIKA_MODE" == "install" || "$FIKA_MODE" == "auto-update" ]]; then
         FIKA_URL="https://github.com/project-fika/Fika-Server-CSharp/releases/download/v${FIKA_VERSION}/${FIKA_ARTIFACT}"
         mkdir -p "$SPT_DIR/user/mods"
         cd /tmp
-        curl -L "$FIKA_URL" -o "$FIKA_ARTIFACT"
+        curl -fL --retry 3 "$FIKA_URL" -o "$FIKA_ARTIFACT"
+        unzip -tq "$FIKA_ARTIFACT"
+        rm -rf /tmp/fika_temp
         unzip -q "$FIKA_ARTIFACT" -d /tmp/fika_temp/
-        mv /tmp/fika_temp/SPT/user/mods/fika-server "$FIKA_MOD_DIR"
+        mv /tmp/fika_temp/SPT_Runtime/user/mods/fika-server "$FIKA_MOD_DIR"
         rm -rf /tmp/fika_temp "/tmp/$FIKA_ARTIFACT"
         echo "Fika server mod installed to $FIKA_MOD_DIR"
     fi
